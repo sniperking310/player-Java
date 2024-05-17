@@ -10,7 +10,7 @@ public class Progress{
         this.traveled = traveled;
     }
 
-    public int getdDistanceLeft(){
+    public int getDistanceLeft(){
         return distance - traveled;
     }
 }
