@@ -21,7 +21,7 @@ mvn spring-boot:run
 ```
 
 ### Functionality
-This application template provides a HTTP server with a single POST endpoint (/) on port `8080`.
+This application template provides a HTTP server with a single POST endpoint (/) on port `3000`.
 The bit-dealer sends a POST request containing the current game state as a JSON object.
 Your task is to implement a function which returns a `PlayerAction` as a response.
 You'll find a predefined function `decide()` in this file: `logic/Strategy.java`.
