@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  description: "BitWars Player API"
+  version: 1.0.0
+  title: "BitWars Player API"
+tags:
+  - name: "Step"
+paths:
+  /:
+    post:
+      summary: "Request a Step based on the Board state."
+      tags:
+        - "Step"
+      description: "Accepts a board object and calculates the step based on it. Returns an lList of actions."
+      operationId: "getStep"
+      requestBody:
+        $ref: "#/components/requestBodies/Board"
+      responses:
+        "200":
+          description: "The list of actions made by the player"
+          content:
+            application/json:
+              schema:
+                description: "List of actions you take"
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/PlayerAction"
+
+components:
+  requestBodies:
+    Board:
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              actions:
+                description: "list of all ongoing actions"
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BoardActions"
+              bases:
+                description: "list of bases"
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Base"
+              config:
+                $ref: "#/components/schemas/GameConfig"
+              game:
+                $ref: "#/components/schemas/Game"
+      description: "Board object that represents the current game state"
+      required: true
+
+  schemas:
+    PlayerAction:
+      description: "one player action."
+      type: "object"
+      properties:
+        src:
+          type: "integer"
+          format: "int32"
+          description: "uid of base"
+        dest:
+          type: "integer"
+          format: "int32"
+          description: "uid of base"
+        amount:
+          type: "integer"
+          format: "int32"
+          description: "number of units moved"
+    BoardActions:
+      allOf:
+        - $ref: '#/components/schemas/PlayerAction'
+        - type: "object"
+          properties:
+            uuid:
+              type: "string"
+              format: "uuid"
+              description: "uuid of the action"
+            player:
+              type: "integer"
+              format: "int32"
+              description: "player id from action owner"
+            progress:
+              type: "object"
+              properties:
+                distance:
+                  type: "integer"
+                  format: "int32"
+                  description: "total ticks from source to destination"
+                traveled:
+                  type: "integer"
+                  format: "int32"
+                  description: "ticks already traveled"
+    Base:
+      type: "object"
+      properties:
+        position:
+          type: "object"
+          properties:
+            x:
+              type: "integer"
+              format: "int32"
+            y:
+              type: "integer"
+              format: "int32"
+            z:
+              type: "integer"
+              format: "int32"
+        uid:
+          type: "integer"
+          format: "int32"
+          description: "uid of the base"
+        player:
+          type: "integer"
+          format: "int32"
+          description: "player id from base owner"
+        population:
+          type: "integer"
+          format: "int32"
+          description: "number of units in base"
+        level:
+          type: "integer"
+          format: "int32"
+          description: "current level of base starting at 0"
+        unitsUntilUpgrade:
+          type: "integer"
+          format: "int32"
+          description: "units needed for next upgrade"
+    GameConfig:
+      type: "object"
+      properties:
+        baselevels:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              maxPopulation:
+                type: "integer"
+                format: "int32"
+                description: "maximum number of units in base"
+              upgradeCost:
+                type: "integer"
+                format: "int32"
+                description: "number of units needed to unlock next upgrade"
+              spawnRate:
+                type: "integer"
+                format: "int32"
+                description: "number of units spawned per tick"
+        paths:
+          type: "object"
+          properties:
+            gracePeriod:
+              type: "integer"
+              format: "int32"
+              description: "ticks until moving units take damage"
+            deathRate:
+              type: "integer"
+              format: "int32"
+              description: "number of units killed per tick after grace period"
+    Game:
+      description: "general game information"
+      type: "object"
+      properties:
+        uid:
+          type: "integer"
+          format: "int32"
+          description: "uid of game"
+        tick:
+          type: "integer"
+          format: "int32"
+          description: "current tick"
+        playerCount:
+          type: "integer"
+          format: "int32"
+          description: "number of players"
+        remainingPlayers:
+          type: "integer"
+          format: "int32"
+          description: "number of players still alive"
+        player:
+          type: "integer"
+          format: "int32"
+          description: "own player uid"
