@@ -1,8 +1,8 @@
 name: Build, push and deploy
 
 on:
-  push:
   workflow_dispatch:
+  push:
 
 env:
   DEPLOYMENT_NAME: ${{ vars.TEAMNAME }}
@@ -19,18 +19,39 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@master
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Prepare repository name
         run: |
           echo IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
 
+      - name: Build jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        run: |
+          mvn --batch-mode --update-snapshots clean spring-boot:build-image \
+          -Dspring-boot.build-image.imageName=ghcr.io/${{ env.IMAGE_REPOSITORY }}:latest
+
       - name: Log in to registry
+        if: github.ref == 'refs/heads/main'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}:latest
+      - name: Push the Docker image to GHCR
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}
+
 
       - name: Install Helm
         if: github.ref == 'refs/heads/main'
