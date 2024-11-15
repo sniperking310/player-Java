@@ -19,6 +19,9 @@ public class Distance {
 
         // Finish Here
 
+        double radicand = Math.pow((x - x_), 2) + Math.pow((y - y_), 2) + Math.pow((z - z_), 2);
+        distance = (int)Math.sqrt(radicand);
+
         return distance;
     }
 }
