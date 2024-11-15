@@ -17,4 +17,12 @@ public class Base{
         this.level = level;
         this.unitsUntilUpgrade = unitsUntilUpgrade;
     }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public int getUid() {
+        return uid;
+    }
 }
