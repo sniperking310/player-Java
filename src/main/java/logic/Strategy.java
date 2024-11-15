@@ -10,6 +10,7 @@ public class Strategy{
     
     public static List<PlayerAction> decide(GameState gameState){
         //TODO: add your logic here
+        //test
         List<PlayerAction> playerAction = new ArrayList<>();
         playerAction.add(new PlayerAction(0, 0, 0));
         return playerAction;
