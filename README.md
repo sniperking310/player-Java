@@ -138,3 +138,11 @@ You can do what you want, as long as you provide the endpoint that is registered
 ## Rules
 
 More Infos: https://bitwars.de/
+
+---
+
+## Current Strategy
+
+1. Try to Conquer as many Bases as possible , in the beginning , that have no Owner .
+2. Try to Conquer all Bases in the "Grace Distance"
+3. Maximize Ressources in the beginning , Fuck position.
