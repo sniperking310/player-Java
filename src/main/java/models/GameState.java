@@ -16,4 +16,10 @@ public class GameState {
         this.config = config;
         this.game = game;
     }
+
+public List<Base> getBases() {
+    return bases;
+}
+
+
 }

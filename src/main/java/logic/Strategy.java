@@ -10,6 +10,7 @@ import models.PlayerAction;
 public class Strategy{
     
     public static List<PlayerAction> decide(GameState gameState){
+        gameState.getBases();
         Distance distance = new Distance();
         distance.calculateDistance(null, null); // Berechnet die Distanz zu einer Base.
         List<PlayerAction> playerAction = new ArrayList<>();
